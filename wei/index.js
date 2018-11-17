@@ -2,7 +2,8 @@ const express = require('express');
 const app = express();
 const sha1 = require('sha1')
 
-const {getUserData,xmlToJs,getMessage} = require('./methods/userData.js')
+const {getUserData,xmlToJs,getMessage} = require('./methods/userData.js');
+const templete = require('./allNews/tempelate.js')
 // { signature: '9e8a36058a071ac8cc497d1bc859d7dc31e21087',
 //   echostr: '6618271436772470748',
 //   timestamp: '1542352844',
@@ -37,28 +38,32 @@ if(req.method === 'GET'){
   const data = await getUserData(req);
   //xml to js
   const content = await xmlToJs(data);
+
   //优化js数据格式
   const message = getMessage(content);
+  let options ={
+    //通过解析用户用户发送的数据确定options的属性值
+    toUserName:message.FromUserName,
+    fromUserName:message.ToUserName,
+    createTime:Date.now(),
+  };
   let news = 'hello，小仙女';
-  if(message.Content === '1'){
+  if(message.Content === '1'){//可以直接获取，不响应用户的时候，不需要优化数据
     news = '一路顺风';
-  }else if(message.Content === '我'){
-    news = '你好漂亮';
-  }else if(message.Content.includes('8')){
-    news = '88~~~';
+    options.msgType = 'text';
+    options.content = news;
+  }else if(message.Content === '2'){
+    options.msgType = 'news';
+    //以下的数据通过msgType的类型进行添加
+    options.title = '微信公众号开发~';
+    options.description = 'class0810~';
+    options.picUrl = 'https://ss1.baidu.com/6ONXsjip0QIZ8tyhnq/it/u=199783060,2774173244&fm=58&s=188FA15AB1206D1108400056000040F6&bpow=121&bpoh=75';
+    options.url = 'http://www.atguigu.com';
   }
-
-  let replyMessage = `<xml>
-      <ToUserName><![CDATA[${message.FromUserName}]]></ToUserName>
-      <FromUserName><![CDATA[${message.ToUserName}]]></FromUserName>
-      <CreateTime>${Date.now()}</CreateTime>
-      <MsgType><![CDATA[text]]></MsgType>
-      <Content><![CDATA[${news}]]></Content>
-      </xml>`;
+  const replyMessage = templete(options)
   res.send(replyMessage);
   // console.log(jsMessage.Content)
 }
-
 });
 
 app.listen(3000,err=>{
