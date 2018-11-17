@@ -6,7 +6,7 @@ module.exports = function(options){
   <MsgType><![CDATA[${options.msgType}]]></MsgType>`;
 
   if(options.msgType === 'text'){
-    replyMessage += `<Content><![CDATA[${options.content}]]></Content>`;
+    replyMessage += `<Content><![CDATA[${options.news}]]></Content>`;
   }else if(options.msgType === 'news'){
     replyMessage += `<ArticleCount>1</ArticleCount>
       <Articles>
@@ -17,8 +17,11 @@ module.exports = function(options){
       <Url><![CDATA[${options.url}]]></Url>
       </item>
       </Articles>`
-
-  };
-  return replyMessage +='</xml>';
+  }
+  // else if (options.msgType === 'voice') {
+  //   replyMessage += `<Voice><MediaId><![CDATA[${options.mediaId}]]></MediaId></Voice>`;
+  // }
+  replyMessage +='</xml>';
+  return replyMessage;
 }
 

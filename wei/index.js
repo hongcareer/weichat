@@ -3,7 +3,8 @@ const app = express();
 const sha1 = require('sha1')
 
 const {getUserData,xmlToJs,getMessage} = require('./methods/userData.js');
-const templete = require('./allNews/tempelate.js')
+const templete = require('./allNews/tempelate.js');
+const choose = require('./allNews/option.js')
 // { signature: '9e8a36058a071ac8cc497d1bc859d7dc31e21087',
 //   echostr: '6618271436772470748',
 //   timestamp: '1542352844',
@@ -41,28 +42,10 @@ if(req.method === 'GET'){
 
   //优化js数据格式
   const message = getMessage(content);
-  let options ={
-    //通过解析用户用户发送的数据确定options的属性值
-    toUserName:message.FromUserName,
-    fromUserName:message.ToUserName,
-    createTime:Date.now(),
-  };
-  let news = 'hello，小仙女';
-  if(message.Content === '1'){//可以直接获取，不响应用户的时候，不需要优化数据
-    news = '一路顺风';
-    options.msgType = 'text';
-    options.content = news;
-  }else if(message.Content === '2'){
-    options.msgType = 'news';
-    //以下的数据通过msgType的类型进行添加
-    options.title = '微信公众号开发~';
-    options.description = 'class0810~';
-    options.picUrl = 'https://ss1.baidu.com/6ONXsjip0QIZ8tyhnq/it/u=199783060,2774173244&fm=58&s=188FA15AB1206D1108400056000040F6&bpow=121&bpoh=75';
-    options.url = 'http://www.atguigu.com';
-  }
+  const options = choose(message);
   const replyMessage = templete(options)
   res.send(replyMessage);
-  // console.log(jsMessage.Content)
+  console.log(replyMessage)
 }
 });
 
@@ -70,4 +53,12 @@ app.listen(3000,err=>{
   if(!err){
     console.log('open');
   }
-})
+});
+
+//{ ToUserName: 'gh_4fe7faab4d6c',
+// FromUserName: 'oAsoR1iP-_D3LZIwNCnK8BFotmJc',
+// CreateTime: '1542356422',
+// MsgType: 'text',
+// Content: '333',
+// MsgId: '6624370391693488478' }
+
