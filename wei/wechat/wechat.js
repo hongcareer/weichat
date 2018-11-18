@@ -1,6 +1,7 @@
 const rp = require('request-promise-native');
 const fs = require('fs');
 const {appID,appsecret} = require('../config');
+const menu = require('./Menu')
 
 class Wechat{
   //获取
@@ -74,13 +75,38 @@ class Wechat{
         this.expires_in = ress.expires_in;
         return Promise.resolve(ress);
       })
+  };
+
+  /**
+   * 创建自定义菜单
+   * @param menu
+   * @returns {Promise<void>}
+   */
+  async createMenu(menu){
+    const {access_token} =await this.fetchAccessToken()
+    const url = `https://api.weixin.qq.com/cgi-bin/menu/create?access_token=${access_token}`;
+    const result = await rp({method: 'POST', url, json: true, body: menu});
+    return result;
+  };
+
+  /**
+   * 删除菜单
+   * @returns {Promise<void>}
+   */
+  async delMenu(){
+    const {access_token} =await this.fetchAccessToken()
+    const url = `https://api.weixin.qq.com/cgi-bin/menu/create?access_token=${access_token}`;
+    const result = await rp({method: 'get', url, json: true});
+    return result;
   }
+
+
+
 };
 
 (async ()=>{
   const w = new Wechat();
-  let result = await w.fetchAccessToken();
-  console.log(result)
-  result = await w.fetchAccessToken();
+  let result = await w.delMenu();
+  result = await w.createMenu(menu);
   console.log(result)
 })();
