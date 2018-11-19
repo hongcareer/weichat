@@ -2,11 +2,12 @@ const rp = require('request-promise-native');
 const fs = require('fs');
 const {appID,appsecret} = require('../config');
 const menu = require('./Menu')
+const api = require('../api')
 
 class Wechat{
   //获取
   async getAccessToken(){
-    const url = `https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=${appID}&secret=${appsecret}`
+    const url = `${api.access_token}appid=${appID}&secret=${appsecret}`
     //使用模板发送GET请求给微信浏览器器，获取access_token
     const result = await rp({method:'GET',url,json:true});
     result.expires_in =Date.now()+3600000*2 - 300000;
@@ -84,7 +85,7 @@ class Wechat{
    */
   async createMenu(menu){
     const {access_token} =await this.fetchAccessToken()
-    const url = `https://api.weixin.qq.com/cgi-bin/menu/create?access_token=${access_token}`;
+    const url = `${api.menu.cereat}access_token=${access_token}`;
     const result = await rp({method: 'POST', url, json: true, body: menu});
     return result;
   };
@@ -95,7 +96,7 @@ class Wechat{
    */
   async delMenu(){
     const {access_token} =await this.fetchAccessToken()
-    const url = `https://api.weixin.qq.com/cgi-bin/menu/create?access_token=${access_token}`;
+    const url = `${api.menu.delete}access_token=${access_token}`;
     const result = await rp({method: 'get', url, json: true});
     return result;
   }
