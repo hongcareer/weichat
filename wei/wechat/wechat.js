@@ -85,7 +85,7 @@ class Wechat{
    */
   async createMenu(menu){
     const {access_token} =await this.fetchAccessToken()
-    const url = `${api.menu.cereat}access_token=${access_token}`;
+    const url = `${api.menu.create}access_token=${access_token}`;
     const result = await rp({method: 'POST', url, json: true, body: menu});
     return result;
   };
@@ -95,13 +95,87 @@ class Wechat{
    * @returns {Promise<void>}
    */
   async delMenu(){
-    const {access_token} =await this.fetchAccessToken()
+    const {access_token} =await this.fetchAccessToken();
     const url = `${api.menu.delete}access_token=${access_token}`;
     const result = await rp({method: 'get', url, json: true});
     return result;
+  };
+
+  /**
+   * 创建用户标签
+   * @param name
+   * @returns {Promise<string>}
+   */
+  async creatUserTag(name){
+    try{
+      const {access_token} = await this.fetchAccessToken();
+      const url = `${api.userTag.create}access_token=${access_token}`;
+      return await rp({method:'POST',url,json:true,body:{tag:{name}}})
+    }catch (e) {
+      return 'creatUserTag方法出了问题：'+e;
+    }
+  };
+
+  /**
+   * 为用户打标签
+   * @param openid_list
+   * @param tagid
+   * @returns {Promise<string>}
+   */
+  async batchUsersTag(openid_list,tagid){
+    try{
+      const {access_token} = await this.fetchAccessToken();
+      const url =`${api.userTag.batch}access_token=${access_token}` ;
+      return await rp({method:'POST',url,json:true,body:{openid_list,tagid}})
+    }catch (e) {
+      return 'batchUsersTag方法出了问题：'+e;
+    }
+  };
+
+  /**
+   * 获取标签下的用户
+   * @param tagid
+   * @param next_openid
+   * @returns {Promise<string>}
+   */
+  async getTagUser(tagid,next_openid = ''){
+    try{
+      const {access_token} = await this.fetchAccessToken();
+      const url =`${api.userTag.get}access_token=${access_token}` ;
+      return await rp({method:'POST',url,json:true,body:{tagid,next_openid}})
+    }catch (e) {
+      return 'getTagUser方法出了问题：'+e;
+    }
+  };
+  /**
+   * 获取已经创建的标签
+   * @returns {Promise<string>}
+   */
+  async getCreatedTags(){
+    try{
+      const {access_token} = await this.fetchAccessToken();
+      const url =`${api.userTag.getCreatedTags}access_token=${access_token}` ;
+      return await rp({method:'GET',url,json:true})
+    }catch (e) {
+      return 'getTagUser方法出了问题：'+e;
+    }
+  };
+  /**
+   * 删除已经创建的标签
+   * @param id
+   * @returns {Promise<string>}
+   */
+  async deleteCreatedTags(id){
+    try{
+      const {access_token} = await this.fetchAccessToken();
+      const url =`${api.userTag.deleteCreatedTags}access_token=${access_token}` ;
+      return await rp({method:'POST',url,json:true,body:{tag:{id}}})
+    }catch (e) {
+      return 'getTagUser方法出了问题：'+e;
+    }
   }
 
-
+  //群发消息
 
 };
 
@@ -109,5 +183,24 @@ class Wechat{
   const w = new Wechat();
   let result = await w.delMenu();
   result = await w.createMenu(menu);
-  console.log(result)
+
+  //管理用户
+  //创建id标签
+  const userTag = await w.creatUserTag('family');
+  //打标签
+  const batchTag = await w.batchUsersTag([
+    'oQhJ61Lv8R7jGHrKGWZnMe1VbBnA',
+    'oQhJ61CyZ_ipYcSXm-im3gGY5UQ4'
+  ],userTag.tag.id)
+  //获取用户标签
+  const getTag = await w.getTagUser(userTag.tag.id);
+  console.log(getTag);
+
+  //删除标签
+  // const result1 = await w.deleteCreatedTags(104);
+  // console.log(result1);
+  //得到已经创建的标签
+  const CreatedTags = await w.getCreatedTags();
+  console.log(CreatedTags);
+
 })();
