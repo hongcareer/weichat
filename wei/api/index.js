@@ -11,5 +11,7 @@ module.exports = {
     get:`https://api.weixin.qq.com/cgi-bin/user/tag/get?`,
     getCreatedTags:`https://api.weixin.qq.com/cgi-bin/tags/get?`,
     deleteCreatedTags:`https://api.weixin.qq.com/cgi-bin/tags/delete?`
-  }
+  },
+  ticket:`https://api.weixin.qq.com/cgi-bin/ticket/getticket?type=jsapi&`
+
 }

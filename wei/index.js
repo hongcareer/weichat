@@ -1,11 +1,43 @@
 const express = require('express');
 const app = express();
-const handleRequest = require('./allNews/handleRequest.js')
-
+const handleRequest = require('./allNews/handleRequest.js');
+const {appID,url} = require('./config');
+const Wechat = require('./wechat/wechat');
+const wechat = new Wechat();
+const sha1 = require('sha1');
 // { signature: '9e8a36058a071ac8cc497d1bc859d7dc31e21087',
 //   echostr: '6618271436772470748',
 //   timestamp: '1542352844',
 //   nonce: '1149727169' }
+const path = require('path');
+app.set('view engine','ejs');
+// app.set('views','./views');
+app.set('views', path.join(__dirname, 'views'));
+
+
+app.get('/search',async (req,res) =>{
+  const {ticket} = await wechat.fetchTicket();
+  const noncestr = Math.random().toString().split('.')[1];
+  const timestamp = parseInt(Date.now()/1000);
+  // console.log(timestamp,noncestr,ticket)
+  // const appId = appID;
+  const arr = [
+    `noncestr=${noncestr}`,
+    `jsapi_ticket=${ticket}`,
+    `timestamp=${timestamp}`,
+    `url=${url}/search`
+  ];
+  //拼接成字符串进行加密
+  const signature = sha1(arr.sort().join('&'));
+  res.render('search',{
+    signature,
+    timestamp,
+    noncestr,
+    appID
+  });
+
+});
+
 app.use(handleRequest());
 
 app.listen(3000,err=>{

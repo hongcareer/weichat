@@ -1,3 +1,4 @@
+const {url} = require('../config')
 module.exports = function(message){
   let options ={
     //通过解析用户用户发送的数据确定options的属性值
@@ -20,6 +21,8 @@ module.exports = function(message){
       options.description = 'class0810~';
       options.picUrl = 'https://ss1.baidu.com/6ONXsjip0QIZ8tyhnq/it/u=199783060,2774173244&fm=58&s=188FA15AB1206D1108400056000040F6&bpow=121&bpoh=75';
       options.url = 'http://www.atguigu.com';
+    }else if (message.Content === '4') {
+      news = `<a href="${url}/search">search页面</a>`;
     };
   } else if(message.MsgType === 'voice'){
     news = `是这个吗：${message.Recognition}`;

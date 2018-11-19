@@ -5,7 +5,7 @@ const menu = require('./Menu')
 const api = require('../api')
 
 class Wechat{
-  //获取
+  //获取AccessToken
   async getAccessToken(){
     const url = `${api.access_token}appid=${appID}&secret=${appsecret}`
     //使用模板发送GET请求给微信浏览器器，获取access_token
@@ -14,7 +14,7 @@ class Wechat{
     // console.log(result)
     return result;
   };
-  //保存
+  //保存AccessToken
   saveAccessToken(filePath,accessToken){
     return new Promise((res,rej)=>{
       //accessToken是一个json的数据，默认会转成js文件，js文件无法保存，所以还需要在转换成json的字符串
@@ -27,7 +27,7 @@ class Wechat{
       });
     });
   };
-  //读取
+  //读取AccessToken
   readAccessToken(filePath){
     return new Promise((res,rej)=>{
       fs.readFile(filePath,(err,data)=>{
@@ -77,6 +77,88 @@ class Wechat{
         return Promise.resolve(ress);
       })
   };
+
+  //获取jsapi_ticket
+  async getTicket(){
+    const {access_token} = await this.fetchAccessToken();
+    // console.log(access_token)
+    const url =`${api.ticket}access_token=${access_token}`;
+    // console.log(url);
+    const result = await rp({method:'GET',url,json:true});
+    // console.log(result)
+    result.expires_in =Date.now()+3600000*2 - 300000;
+    return {
+      ticket:result.ticket,
+      ticket_expires_in: result.expires_in
+    };
+  };
+  //保存jsapi_ticket
+  saveTicket(filePath,ticket){
+    return new Promise((res,rej)=>{
+      //accessToken是一个json的数据，默认会转成js文件，js文件无法保存，所以还需要在转换成json的字符串
+      fs.writeFile(filePath,JSON.stringify(ticket),err=>{
+        if(!err){
+          res();
+        }else{
+          rej('saveTicket方法出了一些小问题呦~~：'+err);
+        };
+      });
+    });
+  };
+  //读取jsapi_ticket
+  readTicket(filePath){
+    return new Promise((res,rej)=>{
+      fs.readFile(filePath,(err,data)=>{
+        if(!err){
+          res(JSON.parse(data.toString()))
+        }else{
+          rej('readAccessToken方法出了一些问题呦~~~：'+err)
+        }
+      })
+    })
+  };
+  //判断是否过期
+  isvalidTicket({ticket_expires_in}){
+    if(ticket_expires_in <= Date.now()){
+      return false;
+    }else{
+      return true;
+    }
+  };
+  //获取真正的jsapi_ticket
+  fetchTicket(){
+    //判断是否过期
+    if(this.ticket && this.ticket_expires_in && this.isvalidTicket(this)){
+      return Promise.resolve({ticket: this.ticket, ticket_expires_in: this.ticket_expires_in})
+    }
+    //返回有效的access_token
+    return this.readTicket('./ticket.txt')
+      .then(async ress =>{
+        if(this.isvalidTicket(ress)){
+          //没有过期，返回一个？值
+          return ress;
+        }else{
+          //过期了重新获取，并且保存
+          const ticket = await this.getTicket();
+          await this.saveTicket('./ticket.txt',ticket);
+          return ticket;
+        }
+      })
+      .catch(async err =>{
+        const ticket = await this.getTicket();
+        console.log(ticket)
+        await this.saveTicket('./ticket.txt',ticket);
+        return ticket;
+
+      })
+      .then(ress=>{
+        this.ticket = ress.ticket;
+        this.ticket_expires_in = ress.ticket_expires_in;
+        return Promise.resolve(ress);
+      })
+  };
+
+
 
   /**
    * 创建自定义菜单
@@ -171,36 +253,40 @@ class Wechat{
       const url =`${api.userTag.deleteCreatedTags}access_token=${access_token}` ;
       return await rp({method:'POST',url,json:true,body:{tag:{id}}})
     }catch (e) {
-      return 'getTagUser方法出了问题：'+e;
+      return 'getTagUse·r方法出了问题：'+e;
     }
   }
-
   //群发消息
+  // async setAllNews =
+  //图文消息
 
 };
 
 (async ()=>{
-  const w = new Wechat();
-  let result = await w.delMenu();
-  result = await w.createMenu(menu);
+  // const w = new Wechat();
+  //获取ticket
+  // let result = await w.delMenu();
+  // result = await w.createMenu(menu);
 
   //管理用户
   //创建id标签
-  const userTag = await w.creatUserTag('family');
-  //打标签
-  const batchTag = await w.batchUsersTag([
-    'oQhJ61Lv8R7jGHrKGWZnMe1VbBnA',
-    'oQhJ61CyZ_ipYcSXm-im3gGY5UQ4'
-  ],userTag.tag.id)
+  // const userTag = await w.creatUserTag('family');
+  // //打标签
+  // const batchTag = await w.batchUsersTag([
+  //   'oQhJ61Lv8R7jGHrKGWZnMe1VbBnA',
+  //   'oQhJ61CyZ_ipYcSXm-im3gGY5UQ4'
+  // ],userTag.tag.id)
   //获取用户标签
-  const getTag = await w.getTagUser(userTag.tag.id);
-  console.log(getTag);
+  // const getTag = await w.getTagUser(userTag.tag.id);
+  // console.log(getTag);
 
   //删除标签
   // const result1 = await w.deleteCreatedTags(104);
   // console.log(result1);
   //得到已经创建的标签
-  const CreatedTags = await w.getCreatedTags();
-  console.log(CreatedTags);
+  // const CreatedTags = await w.getCreatedTags();
+  // console.log(CreatedTags);
 
 })();
+
+module.exports = Wechat;
