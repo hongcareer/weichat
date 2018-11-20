@@ -253,18 +253,41 @@ class Wechat{
       const url =`${api.userTag.deleteCreatedTags}access_token=${access_token}` ;
       return await rp({method:'POST',url,json:true,body:{tag:{id}}})
     }catch (e) {
-      return 'getTagUse·r方法出了问题：'+e;
+      return 'getTagUser方法出了问题：'+e;
     }
   }
+
+
   //群发消息
-  // async setAllNews =
+  async setAllNews(options){
+    try{
+      const {access_token}  = await this.fetchAccessToken();
+      const url =`${api.setAllNew}access_token=${access_token}` ;
+      return await rp({method:'POST',url,json:true,body:options});
+    }catch (e) {
+      return 'setAllNews方法出了问题：'+e;
+    }
+  }
   //图文消息
 
 };
 
 (async ()=>{
-  // const w = new Wechat();
-  //获取ticket
+  const w = new Wechat();
+  //群发消息
+  let result = await w.setAllNews({
+    "filter":{
+      "is_to_all":false,
+      "tag_id":105
+    },
+    "text":{
+      "content":"你真的好帅啊"
+    },
+    "msgtype":"text"
+  });
+  console.log(result)
+  //
+  // 获取ticket
   // let result = await w.delMenu();
   // result = await w.createMenu(menu);
 
@@ -284,8 +307,8 @@ class Wechat{
   // const result1 = await w.deleteCreatedTags(104);
   // console.log(result1);
   //得到已经创建的标签
-  // const CreatedTags = await w.getCreatedTags();
-  // console.log(CreatedTags);
+  const CreatedTags = await w.getCreatedTags();
+  console.log(CreatedTags);
 
 })();
 
