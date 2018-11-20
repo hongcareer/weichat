@@ -10,9 +10,8 @@ const sha1 = require('sha1');
 //   timestamp: '1542352844',
 //   nonce: '1149727169' }
 const path = require('path');
+app.set('views','./views');
 app.set('view engine','ejs');
-// app.set('views','./views');
-app.set('views', path.join(__dirname, 'views'));
 
 
 app.get('/search',async (req,res) =>{
@@ -29,7 +28,7 @@ app.get('/search',async (req,res) =>{
   ];
   //拼接成字符串进行加密
   const signature = sha1(arr.sort().join('&'));
-  res.render('search',{
+  res.render('search.ejs',{
     signature,
     timestamp,
     noncestr,

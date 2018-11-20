@@ -275,17 +275,17 @@ class Wechat{
 (async ()=>{
   const w = new Wechat();
   //群发消息
-  let result = await w.setAllNews({
-    "filter":{
-      "is_to_all":false,
-      "tag_id":105
-    },
-    "text":{
-      "content":"你真的好帅啊"
-    },
-    "msgtype":"text"
-  });
-  console.log(result)
+  // let result = await w.setAllNews({
+  //   "filter":{
+  //     "is_to_all":false,
+  //     "tag_id":105
+  //   },
+  //   "text":{
+  //     "content":"你真的好帅啊"
+  //   },
+  //   "msgtype":"text"
+  // });
+  // console.log(result)
   //
   // 获取ticket
   // let result = await w.delMenu();
@@ -307,8 +307,8 @@ class Wechat{
   // const result1 = await w.deleteCreatedTags(104);
   // console.log(result1);
   //得到已经创建的标签
-  const CreatedTags = await w.getCreatedTags();
-  console.log(CreatedTags);
+  // const CreatedTags = await w.getCreatedTags();
+  // console.log(CreatedTags);
 
 })();
 
