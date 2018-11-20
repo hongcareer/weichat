@@ -38,7 +38,7 @@ module.exports = ()=>{
       const options = choose(message);
       const replyMessage = templete(options)
       res.send(replyMessage);
-      console.log(replyMessage)
+      // console.log(replyMessage)
     }
   };
 }

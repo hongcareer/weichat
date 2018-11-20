@@ -303,34 +303,34 @@ class Wechat{
 (async ()=>{
   let w = new Wechat();
   //获取图片id
-  let result1 = await w.uploadMaterial('image','./lilisi.jpg');
-  // console.log(result1)
-  //{ media_id: 'qBBdP3IS0cM3EdhqNS1ZS8nrjzRK0v_N8qIwf6YkXKI',
-  //   url: 'http://mmbiz.qpic.cn/mmbiz_jpg/zWRcEvfW2STojSRpRtXMLVRPTVAsZbkSAgoo3LicbHmRwSHtHzSthJEJJ5snRUOALRnhPur7TPEI
-  //获取图文中的图片id
-  const result2 = await w.uploadMaterial('pic','./love.jpg');
-  //上传图文消息
-  console.log(result2);
-  let result3 = await w.uploadMaterial('news',{
-    "articles": [{
-    "title": '暖暖女儿今天公测了吗',
-    "thumb_media_id":'qBBdP3IS0cM3EdhqNS1ZS8nrjzRK0v_N8qIwf6YkXKI',
-    "author": '暮胭',
-    "digest": '公测',
-    "show_cover_pic":0,
-    "content":`<!DOCTYPE html><html lang="en"><head>
-<meta charset="UTF-8"><title>Title</title></head>
-<body><h1>点击这里关注更多公测信息</h1><img src="${result2.url}"></body></html>`,
-    "content_source_url":'https://nikki4.papegames.cn/',
-    "need_open_comment":1,
-    "only_fans_can_comment":0
-    }
-    ]
-  });
-  //创建菜单
-  // let result = await w.delMenu();
-  // result = await w.createMenu(require('./Menu'))
-  console.log(result3);
+//   let result1 = await w.uploadMaterial('image','./lilisi.jpg');
+//   // console.log(result1)
+//   //{ media_id: 'qBBdP3IS0cM3EdhqNS1ZS8nrjzRK0v_N8qIwf6YkXKI',
+//   //   url: 'http://mmbiz.qpic.cn/mmbiz_jpg/zWRcEvfW2STojSRpRtXMLVRPTVAsZbkSAgoo3LicbHmRwSHtHzSthJEJJ5snRUOALRnhPur7TPEI
+//   //获取图文中的图片id
+//   const result2 = await w.uploadMaterial('pic','love.jpg');
+//   //上传图文消息
+//   console.log(result2);
+//   let result3 = await w.uploadMaterial('news',{
+//     "articles": [{
+//     "title": '暖暖女儿今天公测了吗',
+//     "thumb_media_id":'qBBdP3IS0cM3EdhqNS1ZS8nrjzRK0v_N8qIwf6YkXKI',
+//     "author": '暮胭',
+//     "digest": '公测',
+//     "show_cover_pic":0,
+//     "content":`<!DOCTYPE html><html lang="en"><head>
+// <meta charset="UTF-8"><title>Title</title></head>
+// <body><h1>点击这里关注更多公测信息</h1><img src="${result2.url}"></body></html>`,
+//     "content_source_url":'https://nikki4.papegames.cn/',
+//     "need_open_comment":1,
+//     "only_fans_can_comment":0
+//     }
+//     ]
+//   });
+//   //创建菜单
+//   let result = await w.delMenu();
+//   result = await w.createMenu(require('./Menu'))
+//   console.log(result3);
   //media_id = qBBdP3IS0cM3EdhqNS1ZS-9w0tmAVV0GIHpfwcpDQ4g
   //群发消息
   // let result = await w.setAllNews({

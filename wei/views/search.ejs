@@ -6,8 +6,9 @@
     <title>Title</title>
 </head>
 <body>
+<script src="https://cdn.bootcss.com/zepto/1.0rc1/zepto.min.js"></script>
 <script src="http://res2.wx.qq.com/open/js/jweixin-1.4.0.js"></script>
-<script type="text/javascript" src="https://cdn.bootcss.com/zepto/1.0rc1/zepto.min.js"></script>
+
 <h2>语音识别功能</h2>
 <ul id="list"></ul>
 <button id="btn">点击开始录音</button>
@@ -42,15 +43,35 @@
                   isShowProgressTips: 1, // 默认为1，显示进度提示
                   success: function (res) {
                     alert(res.translateResult); // 语音识别的结果
-                    const url = `http://api.douban.com/v2/movie/search?q=${res.translateResult}&count=5`;
+                    const url = `http://api.douban.com/v2/movie/search?count=9&callback=?&q=${res.translateResult}`;
                     console.log(url);
-                    $.getJSON(url,function(data){
-                      console.log(data);
+                    //使用jsonP的方式跨域请求
+                    $.getJSON(url, function ({subjects}) {
                       let html = '';
-                      subjects.forEach(function(index,item){
-                        // html =
+                      subjects.forEach(function (index, item) {
+                        html += `<li><h3>${item.title}</h3><img src="${item.images.small}"><p>电影评分：${item.rating.average}</p></li>`;
+                      });
+                      $('#list').html(html);
+                      //自定义“分享给朋友”及“分享到QQ”按钮的分享内容
+                      wx.updateAppMessageShareData({
+                        title: subjects[0].title, // 分享标题
+                        desc: `类型：${subjects[0].genres}`, // 分享描述
+                        link: subjects[0].alt, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+                        imgUrl: subjects[0].image.small, // 分享图标
+                        success: function () {
+                          alert('分享给微信好朋友或者qq好友');
+                        }
+                      });
+                      //自定义“分享到朋友圈”及“分享到QQ空间”按钮的分享内容
+                      wx.updateTimelineShareData({
+                        title: subjects[0].title, // 分享标题
+                        link: subjects[0].alt, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+                        imgUrl: subjects[0].images.small, // 分享图标
+                        success: function () {
+                          // 设置成功
+                          alert('分享到朋友圈或者qq空间');
+                        }
                       })
-
                     })
                   }
                 });
