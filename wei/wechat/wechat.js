@@ -268,12 +268,70 @@ class Wechat{
       return 'setAllNews方法出了问题：'+e;
     }
   }
-  //图文消息
-
+  //图文消息，素材管理
+  async uploadMaterial(type, material, body){
+    try{
+      const {access_token} = await this.fetchAccessToken();
+      let url = ``;
+      const options = {method:'POST',json:true};
+      if(type === 'news'){
+        //设置请求体的参数
+        url = `${api.type.new}access_token=${access_token}`;
+        options.body = material;
+      }else if(type === 'pic'){
+        url = `${api.type.pic}access_token=${access_token}`;
+        options.formData ={
+          media:fs.createReadStream(material)
+        }
+      }else{
+        url = `${api.type.others}access_token=${access_token}&type=${type}`;
+        options.formData ={
+          media:fs.createReadStream(material)
+        }
+      };
+      if(type === 'video'){
+        options.body = body;
+      }
+      options.url = url;
+      return await rp(options);
+    }catch (e) {
+      return 'uploadMaterial方法出了问题：'+e;
+    }
+  }
 };
 
 (async ()=>{
-  const w = new Wechat();
+  let w = new Wechat();
+  //获取图片id
+  let result1 = await w.uploadMaterial('image','./lilisi.jpg');
+  // console.log(result1)
+  //{ media_id: 'qBBdP3IS0cM3EdhqNS1ZS8nrjzRK0v_N8qIwf6YkXKI',
+  //   url: 'http://mmbiz.qpic.cn/mmbiz_jpg/zWRcEvfW2STojSRpRtXMLVRPTVAsZbkSAgoo3LicbHmRwSHtHzSthJEJJ5snRUOALRnhPur7TPEI
+  //获取图文中的图片id
+  const result2 = await w.uploadMaterial('pic','./love.jpg');
+  //上传图文消息
+  console.log(result2);
+  let result3 = await w.uploadMaterial('news',{
+    "articles": [{
+    "title": '暖暖女儿今天公测了吗',
+    "thumb_media_id":'qBBdP3IS0cM3EdhqNS1ZS8nrjzRK0v_N8qIwf6YkXKI',
+    "author": '暮胭',
+    "digest": '公测',
+    "show_cover_pic":0,
+    "content":`<!DOCTYPE html><html lang="en"><head>
+<meta charset="UTF-8"><title>Title</title></head>
+<body><h1>点击这里关注更多公测信息</h1><img src="${result2.url}"></body></html>`,
+    "content_source_url":'https://nikki4.papegames.cn/',
+    "need_open_comment":1,
+    "only_fans_can_comment":0
+    }
+    ]
+  });
+  //创建菜单
+  // let result = await w.delMenu();
+  // result = await w.createMenu(require('./Menu'))
+  console.log(result3);
+  //media_id = qBBdP3IS0cM3EdhqNS1ZS-9w0tmAVV0GIHpfwcpDQ4g
   //群发消息
   // let result = await w.setAllNews({
   //   "filter":{

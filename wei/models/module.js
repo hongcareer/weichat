@@ -12,5 +12,5 @@ const trailersSchema = new mongoose.Schema({
   image:String,
   doubanId:String
 });
-const Trailers = mongoose.modle('trailers',trailersSchema);
+const Trailers = mongoose.model('trailers',trailersSchema);
 module.exports = Trailers;

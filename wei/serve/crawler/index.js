@@ -24,7 +24,7 @@ module.exports = async () => {
     //将数据返回出去
     return result;
   });
-  console.log(result);
+  // console.log(result);
   //第二次
   let movies = [];
   for (var i = 0; i < result.length; i++) {
@@ -81,8 +81,7 @@ module.exports = async () => {
       data.doubanId = item.split('subject/')[1].split('/')[0];
       movies.push(data)
     }catch (e) {}
-    console.log(movies)
-
+    // console.log(movies)
   }
   //第三次，爬取视频链接
   for (var i = 0; i < movies.length; i++) {
