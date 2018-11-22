@@ -304,14 +304,14 @@ class Wechat{
 (async ()=>{
   let w = new Wechat();
   //获取图片id
-  // let result1 = await w.uploadMaterial('image','./lilisi.jpg');
-  // console.log(result1)
-//   //{ media_id: 'qBBdP3IS0cM3EdhqNS1ZS8nrjzRK0v_N8qIwf6YkXKI',
-//   //   url: 'http://mmbiz.qpic.cn/mmbiz_jpg/zWRcEvfW2STojSRpRtXMLVRPTVAsZbkSAgoo3LicbHmRwSHtHzSthJEJJ5snRUOALRnhPur7TPEI
+  // let result = await w.uploadMaterial('image','./a.jpg');
+  // console.log(result)
+  //{ media_id: 'qBBdP3IS0cM3EdhqNS1ZS28Gqhe5Agk63dsMYJvQzhQ',
+  // url: 'http://mmbiz.qpic.cn/mmbiz_jpg/zWRcEvfW2STB0qfP13pU6hvqC6VHLTTGJvuj57o8ujH4KwicwJfvHqPzoOHoTBROSHib9eKJ9asRvaXvYhia6InFA/0?wx_fmt=jpeg' }
 //   //获取图文中的图片id
-//   const result2 = await w.uploadMaterial('pic','./love.jpg');
+//   let resul = await w.uploadMaterial('image','Li.jpg');
 //   //上传图文消息
-//   console.log(result2);
+//   console.log(resul);
 //   let result3 = await w.uploadMaterial('news',{
 //     "articles": [{
 //     "title": '暖暖女儿今天公测了吗',
@@ -346,8 +346,9 @@ class Wechat{
   // console.log(result)
   //
   // 获取ticket
-  // let result = await w.delMenu();
-  // result = await w.createMenu(menu);
+  // let del = await w.delMenu();
+  // creat = await w.createMenu(menu);
+  // console.log(creat)
 
   //管理用户
   //创建id标签

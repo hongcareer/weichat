@@ -44,7 +44,7 @@
                   success: function (res) {
                     alert(res.translateResult); // 语音识别的结果
                     const url = `http://api.douban.com/v2/movie/search?count=9&callback=?&q=${res.translateResult}`;
-                    console.log(url);
+                    // console.log(url);
                     //使用jsonP的方式跨域请求
                     $.getJSON(url, function ({subjects}) {
                       let html = '';
