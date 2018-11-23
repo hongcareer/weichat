@@ -6,12 +6,13 @@
     <title>Title</title>
 </head>
 <body>
-<script src="https://cdn.bootcss.com/zepto/1.0rc1/zepto.min.js"></script>
-<script src="http://res2.wx.qq.com/open/js/jweixin-1.4.0.js"></script>
+<script type="text/javascript" src="./js/rem.js"></script>
+<script type="text/javascript" src="https://cdn.bootcss.com/zepto/1.0rc1/zepto.min.js"></script>
+<script type="text/javascript" src="http://res2.wx.qq.com/open/js/jweixin-1.4.0.js"></script>
 
 <h2>语音识别功能</h2>
-<ul id="list"></ul>
 <button id="btn">点击开始录音</button>
+<ul class="list"></ul>
 <script>
     $(function(){
       wx.config({
@@ -42,16 +43,29 @@
                   localId: localId, // 需要识别的音频的本地Id，由录音相关接口获得
                   isShowProgressTips: 1, // 默认为1，显示进度提示
                   success: function (res) {
-                    alert(res.translateResult); // 语音识别的结果
+                    // alert(res.translateResult); // 语音识别的结果
                     const url = `http://api.douban.com/v2/movie/search?count=9&callback=?&q=${res.translateResult}`;
-                    // console.log(url);
+                    console.log(url);
                     //使用jsonP的方式跨域请求
                     $.getJSON(url, function ({subjects}) {
                       let html = '';
-                      subjects.forEach(function (index, item) {
-                        html += `<li><h3>${item.title}</h3><img src="${item.images.small}"><p>电影评分：${item.rating.average}</p></li>`;
+                      subjects.forEach(function (item, index) {
+                        html += `<li class="item">
+                                    <a href="javascript:">
+                                      <div class="cover">
+                                        <img src="${item.images.small}" alt="${item.title}" data-x="2000" data-y="2963" class="img-show" style="width: 100%;">
+                                      </div>
+                                      <div class="info">
+                                        <h3>${item.title}</h3>
+                                        <p class="rank">
+                                          <span>评分:</span>
+                                          <span class="rating">${item.rating.average}</span>
+                                        </p>
+                                      </div>
+                                    </a>
+                                  </li>`;
                       });
-                      $('#list').html(html);
+                      $('.list').html(html);
                       //自定义“分享给朋友”及“分享到QQ”按钮的分享内容
                       wx.updateAppMessageShareData({
                         title: subjects[0].title, // 分享标题

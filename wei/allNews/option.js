@@ -1,4 +1,5 @@
-const {url} = require('../config')
+const {url} = require('../config');
+const rp = require('request-promise-native');
 module.exports =async function(message){
   let options ={
     //通过解析用户用户发送的数据确定options的属性值
@@ -8,7 +9,6 @@ module.exports =async function(message){
     msgType:'text'
   };
   let news = 'hello，小仙女';
-
   if(message.MsgType === 'text'){
     //用户发送的数据类型为文本
     if(message.Content === '预告片'){//可以直接获取，不响应用户的时候，不需要优化数据
@@ -38,8 +38,10 @@ module.exports =async function(message){
   } else if(message.MsgType === 'voice'){
     //识别语音--使用微信的语音识别功能
     const url = `http://api.douban.com/v2/movie/search`;
+    console.log(url)
     const {subjects} = await rp({method: 'GET',url,json:true,qs: {count:1,q:message.translateResult}});
     options.msgType = 'news';
+    console.log(subjects)
     //以下的数据通过msgType的类型进行添加
     options.title = subjects[0].title;
     options.description = `grade：${subjects[0].rating.average}`;
@@ -65,7 +67,7 @@ module.exports =async function(message){
                 也可以点击<a href="${url}/search">语音识别</a>来跳转`;
       }
     }
-  }
+  };
   options.news = news;
   return options;
 }

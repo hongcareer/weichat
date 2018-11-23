@@ -35,7 +35,7 @@ module.exports = ()=>{
 
       //优化js数据格式
       const message = getMessage(content);
-      const options = choose(message);
+      const options =await choose(message);
       const replyMessage = templete(options)
       res.send(replyMessage);
       // console.log(replyMessage)
